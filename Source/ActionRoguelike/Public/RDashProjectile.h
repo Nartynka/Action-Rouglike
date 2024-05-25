@@ -21,10 +21,10 @@ protected:
 	FTimerHandle TimerHandle_DelayedExplode;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Teleport")
-	float ExplodeDelay = 0.2f;
+	float ExplodeDelay;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Teleport")
-	float TeleportDelay = 0.2f;
+	float TeleportDelay;
 
 	void BeginPlay() override;
 	void Explode() override;

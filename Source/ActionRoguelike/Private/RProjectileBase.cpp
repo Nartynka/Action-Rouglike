@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "RAttributeComponent.h"
 
 // Sets default values
 ARProjectileBase::ARProjectileBase()
@@ -23,7 +24,7 @@ ARProjectileBase::ARProjectileBase()
 	EffectComp->SetupAttachment(SphereComp);
 
 	MovementComp = CreateDefaultSubobject<UProjectileMovementComponent>("MovmentComp");
-	MovementComp->InitialSpeed = 1000.f;
+	MovementComp->InitialSpeed = 4000.f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 	MovementComp->ProjectileGravityScale = 0.f;
@@ -35,6 +36,7 @@ void ARProjectileBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	SphereComp->OnComponentHit.AddDynamic(this, &ARProjectileBase::OnHit);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ARProjectileBase::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -47,9 +49,22 @@ void ARProjectileBase::BeginPlay()
 
 void ARProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor != GetInstigator())
+	if (OtherActor && OtherActor != GetInstigator())
 	{
 		Explode();
+	}
+}
+
+void ARProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != GetInstigator())
+	{
+		URAttributeComponent* AttributeComp = Cast<URAttributeComponent>(OtherActor->GetComponentByClass(URAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.f);
+			Explode();
+		}
 	}
 }
 

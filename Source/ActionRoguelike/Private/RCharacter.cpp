@@ -5,10 +5,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "RInteractionComponent.h"
-
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+#include "RInteractionComponent.h"
+#include "RAttributeComponent.h"
 
 // Sets default values
 ARCharacter::ARCharacter()
@@ -27,6 +28,8 @@ ARCharacter::ARCharacter()
 	bUseControllerRotationYaw = false;
 
 	InteractionComp = CreateDefaultSubobject<URInteractionComponent>("InteractionComp");
+
+	AttributeComp = CreateDefaultSubobject<URAttributeComponent>("AttributeComp");
 
 	SpawnProjectileDelay = 0.2f;
 }

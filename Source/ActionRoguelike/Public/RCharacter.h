@@ -13,6 +13,7 @@ class USpringArmComponent;
 class URInteractionComponent;
 class UAnimMontage;
 class UInputMappingContext;
+class URAttributeComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ARCharacter : public ACharacter
@@ -39,7 +40,6 @@ protected:
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_BlackHoleAttack;
 	FTimerHandle TimerHandle_Dash;
-	//FTimerHandle TimerHandle_Dash2;
 
 	/* COMPONENTS */
 	UPROPERTY(VisibleAnywhere)
@@ -48,9 +48,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	URInteractionComponent* InteractionComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	URAttributeComponent* AttributeComp;
 
 	/* INPUT MAPPING */
 	UPROPERTY(EditDefaultsOnly, Category="Input")

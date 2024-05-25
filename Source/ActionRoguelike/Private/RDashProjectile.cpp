@@ -11,6 +11,9 @@
 ARDashProjectile::ARDashProjectile()
 {
 	ExplodeDelay = 0.2f;
+	TeleportDelay = 0.2f;
+
+	MovementComp->InitialSpeed = 6000.f;
 }
 
 void ARDashProjectile::BeginPlay()
