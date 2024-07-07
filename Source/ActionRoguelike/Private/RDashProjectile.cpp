@@ -24,7 +24,7 @@ void ARDashProjectile::BeginPlay()
 }
 
 
-void ARDashProjectile::Explode()
+void ARDashProjectile::Explode_Implementation()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_DelayedExplode);
 

@@ -10,6 +10,7 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
+class USoundCue;
 
 UCLASS(ABSTRACT)
 class ACTIONROGUELIKE_API ARProjectileBase : public AActor
@@ -22,8 +23,14 @@ public:
 
 protected:
 	
+	UPROPERTY(EditAnywhere, Category = "Damage");
+	float Damage;
+
 	UPROPERTY(EditAnywhere, Category = "Particles")
 	UParticleSystem* ExplodeParticle;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	USoundCue* ImpactSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
@@ -34,18 +41,15 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* EffectComp;
 
-
 	virtual void PostInitializeComponents() override;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	virtual void Explode();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Explode();
 
 
 public:	

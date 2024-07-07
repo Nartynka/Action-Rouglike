@@ -27,7 +27,8 @@ protected:
 	float TeleportDelay;
 
 	void BeginPlay() override;
-	void Explode() override;
+
+	void Explode_Implementation() override;
 
 	void TeleportInstigator();
 

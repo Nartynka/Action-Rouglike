@@ -27,5 +27,5 @@ protected:
 	URAttributeComponent* AttributeComp;
 
 	UFUNCTION()
-	void OnHealthChanged(float NewHealth, float Delta);
+	void OnHealthChanged(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta);
 };

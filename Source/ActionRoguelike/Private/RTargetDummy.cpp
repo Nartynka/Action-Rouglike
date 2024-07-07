@@ -20,7 +20,7 @@ ARTargetDummy::ARTargetDummy()
 
 }
 
-void ARTargetDummy::OnHealthChanged(float NewHealth, float Delta)
+void ARTargetDummy::OnHealthChanged(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
 	if (Delta < 0.f)
 	{

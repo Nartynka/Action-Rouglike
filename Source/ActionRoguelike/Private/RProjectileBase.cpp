@@ -7,7 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "RAttributeComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 ARProjectileBase::ARProjectileBase()
@@ -19,16 +19,16 @@ ARProjectileBase::ARProjectileBase()
 	SphereComp->SetCollisionProfileName("Projectile");
 	RootComponent = SphereComp;
 
+	Damage = 20.f;
 
 	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
-	EffectComp->SetupAttachment(SphereComp);
+	EffectComp->SetupAttachment(RootComponent);
 
 	MovementComp = CreateDefaultSubobject<UProjectileMovementComponent>("MovmentComp");
 	MovementComp->InitialSpeed = 4000.f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 	MovementComp->ProjectileGravityScale = 0.f;
-
 }
 
 void ARProjectileBase::PostInitializeComponents()
@@ -36,7 +36,6 @@ void ARProjectileBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	SphereComp->OnComponentHit.AddDynamic(this, &ARProjectileBase::OnHit);
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ARProjectileBase::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -45,34 +44,20 @@ void ARProjectileBase::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
+
 }
 
 void ARProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor && OtherActor != GetInstigator())
-	{
-		Explode();
-	}
+	Explode();
 }
 
-void ARProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor && OtherActor != GetInstigator())
-	{
-		URAttributeComponent* AttributeComp = Cast<URAttributeComponent>(OtherActor->GetComponentByClass(URAttributeComponent::StaticClass()));
-		if (AttributeComp)
-		{
-			AttributeComp->ApplyHealthChange(-20.f);
-			Explode();
-		}
-	}
-}
-
-void ARProjectileBase::Explode()
+void ARProjectileBase::Explode_Implementation()
 {
 	// If we accidentally call explode twice
 	if (ensure(IsValid(this)))
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 		UGameplayStatics::SpawnEmitterAtLocation(this, ExplodeParticle, GetActorLocation(), GetActorRotation());
 		Destroy();
 	}

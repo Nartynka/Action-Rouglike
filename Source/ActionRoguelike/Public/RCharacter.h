@@ -35,6 +35,9 @@ protected:
 	UAnimMontage* AttackAnim;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
+	UParticleSystem* FireParticle;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	float SpawnProjectileDelay;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
@@ -98,12 +101,16 @@ protected:
 
 	void Interact();
 
+	UFUNCTION()
+	void OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	virtual void PostInitializeComponents() override;
 
 public:	
 
 	// Sets default values for this character's properties
 	ARCharacter();
-
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

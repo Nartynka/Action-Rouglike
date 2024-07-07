@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "RInteractionComponent.h"
 #include "RAttributeComponent.h"
@@ -32,6 +33,13 @@ ARCharacter::ARCharacter()
 	AttributeComp = CreateDefaultSubobject<URAttributeComponent>("AttributeComp");
 
 	SpawnProjectileDelay = 0.2f;
+}
+
+void ARCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ARCharacter::OnHealthChange);
 }
 
 // Called when the game starts or when spawned
@@ -144,6 +152,8 @@ void ARCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 
 		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
+		UGameplayStatics::SpawnEmitterAttached(FireParticle, GetMesh(), "Muzzle_01");
+
 		FHitResult Hit;
 
 		FCollisionObjectQueryParams ObjectQueryParams;
@@ -179,5 +189,25 @@ void ARCharacter::Interact()
 	if (InteractionComp)
 	{
 		InteractionComp->PrimaryInteract();
+	}
+}
+
+void ARCharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta)
+{
+	// Player Damaged
+	if (Delta < 0.f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("HitTime", GetWorld()->GetTimeSeconds());
+	}
+
+	// Player Death
+	if (NewHealth <= 0.f && Delta < 0.f)
+	{
+		APlayerController* PC = GetController<APlayerController>();
+		//APlayerController* PC = Cast<APlayerController>(GetController());
+		// #include "Kismet/GameplayStatics.h"
+		//APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+		DisableInput(PC);
 	}
 }
