@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RProjectileBase.h"
+#include "Projectiles/RProjectileBase.h"
 #include "RBlackHoleProjectile.generated.h"
 
 /**

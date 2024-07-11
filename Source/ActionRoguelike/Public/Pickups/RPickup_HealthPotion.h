@@ -3,20 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "RPickup.h"
+#include "Pickups/RPickupBase.h"
 
-#include "RHealthPotion.generated.h"
+#include "RPickup_HealthPotion.generated.h"
 
 
 UCLASS()
-class ACTIONROGUELIKE_API ARHealthPotion : public ARPickup
+class ACTIONROGUELIKE_API ARPickup_HealthPotion : public ARPickupBase
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ARHealthPotion();
+	ARPickup_HealthPotion();
 
 protected:
 
@@ -26,10 +25,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void Interact_Implementation(APawn* InstigatorPawn) override;
-
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+
+	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 };

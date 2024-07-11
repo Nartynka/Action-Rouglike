@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "RProjectileBase.h"
-
+#include "Projectiles/RProjectileBase.h"
 #include "RMagicProjectile.generated.h"
 
 UCLASS()

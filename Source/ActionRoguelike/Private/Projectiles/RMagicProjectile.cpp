@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RMagicProjectile.h"
+#include "Projectiles/RMagicProjectile.h"
 
 #include "Components/SphereComponent.h"
 #include "Components/AudioComponent.h"

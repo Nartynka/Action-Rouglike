@@ -6,22 +6,22 @@
 #include "GameFramework/Actor.h"
 #include "RGameplayInterface.h"
 
-#include "RPickup.generated.h"
+#include "RPickupBase.generated.h"
 
 class UStaticMeshComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ARPickup : public AActor, public IRGameplayInterface
+class ACTIONROGUELIKE_API ARPickupBase : public AActor, public IRGameplayInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ARPickup();
+	ARPickupBase();
 
 protected:
 
-	FTimerHandle TimerHandle_Reactive;
+	FTimerHandle TimerHandle_Respawn;
 
 	UPROPERTY(EditAnywhere, Category = "Amounts")
 	float CooldownAmount;
@@ -35,13 +35,8 @@ protected:
 
 	void Interact_Implementation(APawn* InstigatorPawn);
 
-	void Activate();
-	void Deactivate();
+	void ShowPickup();
+	void HideAndCooldownPicup();
 
-
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	void SetPickupState(bool bNewIsActive);
 };

@@ -152,7 +152,7 @@ void ARCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 
 		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
-		UGameplayStatics::SpawnEmitterAttached(FireParticle, GetMesh(), "Muzzle_01");
+		UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), "Muzzle_01");
 
 		FHitResult Hit;
 

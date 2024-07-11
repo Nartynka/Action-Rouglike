@@ -22,8 +22,7 @@ bool URAttributeComponent::IsMaxHealth() const
 
 bool URAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	Health += Delta;
-	Health = FMath::Clamp(Health, 0.f, HealthMax);
+	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
 	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 
 	return true;

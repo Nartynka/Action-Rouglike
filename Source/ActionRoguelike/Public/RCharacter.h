@@ -35,7 +35,7 @@ protected:
 	UAnimMontage* AttackAnim;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	UParticleSystem* FireParticle;
+	UParticleSystem* CastingEffect;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float SpawnProjectileDelay;
