@@ -22,6 +22,13 @@ class ACTIONROGUELIKE_API ARCharacter : public ACharacter
  
 protected:
 
+	/* Read Only */
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName HandSocketName;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName HitTimeParamName;
+
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> PrimaryAttackProjectileClass;
 
@@ -39,6 +46,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float SpawnProjectileDelay;
+
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_BlackHoleAttack;
@@ -97,7 +105,10 @@ protected:
 	void Dash();
 	void Dash_TimeElapsed();
 
+	void StartAttackEffects();
+
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+
 
 	void Interact();
 

@@ -33,6 +33,8 @@ ARCharacter::ARCharacter()
 	AttributeComp = CreateDefaultSubobject<URAttributeComponent>("AttributeComp");
 
 	SpawnProjectileDelay = 0.2f;
+	HandSocketName = "Muzzle_01";
+	HitTimeParamName = "HitTime";
 }
 
 void ARCharacter::PostInitializeComponents()
@@ -108,7 +110,7 @@ void ARCharacter::Look(const FInputActionValue& InputValue)
 
 void ARCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	StartAttackEffects();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ARCharacter::PrimaryAttack_TimeElapsed, SpawnProjectileDelay);
 }
@@ -120,7 +122,7 @@ void ARCharacter::PrimaryAttack_TimeElapsed()
 
 void ARCharacter::BlackHoleAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	StartAttackEffects();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ARCharacter::BlackHoleAttack_TimeElapsed, SpawnProjectileDelay);
 }
@@ -132,7 +134,7 @@ void ARCharacter::BlackHoleAttack_TimeElapsed()
 
 void ARCharacter::Dash()
 {
-	PlayAnimMontage(AttackAnim);
+	StartAttackEffects();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ARCharacter::Dash_TimeElapsed, SpawnProjectileDelay);
 }
@@ -140,6 +142,13 @@ void ARCharacter::Dash()
 void ARCharacter::Dash_TimeElapsed()
 {
 	SpawnProjectile(DashProjectileClass);
+}
+
+void ARCharacter::StartAttackEffects()
+{
+	PlayAnimMontage(AttackAnim);
+
+	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 }
 
 void ARCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
@@ -150,9 +159,7 @@ void ARCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Instigator = this;
 
-		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-
-		UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), "Muzzle_01");
+		FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 
 		FHitResult Hit;
 
@@ -197,7 +204,7 @@ void ARCharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent* 
 	// Player Damaged
 	if (Delta < 0.f)
 	{
-		GetMesh()->SetScalarParameterValueOnMaterials("HitTime", GetWorld()->GetTimeSeconds());
+		GetMesh()->SetScalarParameterValueOnMaterials(HitTimeParamName, GetWorld()->GetTimeSeconds());
 	}
 
 	// Player Death
