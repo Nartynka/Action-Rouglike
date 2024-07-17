@@ -23,10 +23,10 @@ class ACTIONROGUELIKE_API ARCharacter : public ACharacter
 protected:
 
 	/* Read Only */
-	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	UPROPERTY(VisibleAnywhere, Category = "_Effects")
 	FName HandSocketName;
 
-	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	UPROPERTY(VisibleAnywhere, Category = "_Effects")
 	FName HitTimeParamName;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
