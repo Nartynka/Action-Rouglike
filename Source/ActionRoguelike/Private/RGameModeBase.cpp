@@ -3,6 +3,9 @@
 
 #include "RGameModeBase.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "AI/RAICharacter.h"
+#include "EngineUtils.h"
+#include "RAttributeComponent.h"
 
 
 ARGameModeBase::ARGameModeBase()
@@ -27,15 +30,44 @@ void ARGameModeBase::SpawnBots_TimeElapsed()
 
 void ARGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result)
 {
-	if (!Result->IsSuccessful())
+	// Accessing a raw pointer is slightly faster 
+	FEnvQueryResult* QueryResult = Result.Get();
+	if (!QueryResult->IsSuccessful())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Bots EQS Failed!"));
 		return;
 	}
-		
-	TArray<FVector> OutLocations;
-	Result->GetAllAsLocations(OutLocations);
 	
+
+	int32 NrOfAliveBots = 0;
+
+	for (TActorIterator<ARAICharacter> It(GetWorld()); It; ++It)
+	{
+		ARAICharacter* Bot = *It;
+		URAttributeComponent* AttributeComp = Bot->GetComponentByClass<URAttributeComponent>();
+
+		if (AttributeComp && AttributeComp->IsAlive())
+		{
+			NrOfAliveBots++;
+		}
+	}
+
+	float MaxBotsCount = 5.f;
+
+	if (DifficultyCurve)
+	{
+		MaxBotsCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if (NrOfAliveBots >= MaxBotsCount)
+	{
+		return;
+	}
+
+	TArray<FVector> OutLocations;
+	QueryResult->GetAllAsLocations(OutLocations);
+	
+
 	if (OutLocations.Num() > 0)
 	{
 		GetWorld()->SpawnActor<AActor>(BotClass, OutLocations[0], FRotator::ZeroRotator);

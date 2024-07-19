@@ -7,6 +7,7 @@
 #include "RAICharacter.generated.h"
 
 class UPawnSensingComponent;
+class URAttributeComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ARAICharacter : public ACharacter
@@ -27,8 +28,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	URAttributeComponent* AttributeComp;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION()
+	void OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta);
 
 public:	
 	// Called every frame

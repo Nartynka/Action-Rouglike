@@ -8,12 +8,9 @@
 
 #include "RGameModeBase.generated.h"
 
-
 class UEnvQuery;
+class UCurveFloat;
 
-/**
- * 
- */
 UCLASS()
 class ACTIONROGUELIKE_API ARGameModeBase : public AGameModeBase
 {
@@ -21,9 +18,11 @@ class ACTIONROGUELIKE_API ARGameModeBase : public AGameModeBase
 	
 protected:
 
-
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TSubclassOf<AActor> BotClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	UCurveFloat* DifficultyCurve;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	UEnvQuery* SpawnBotQuery;

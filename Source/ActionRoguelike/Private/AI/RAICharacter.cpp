@@ -7,6 +7,8 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+#include "RAttributeComponent.h"
+
 // Sets default values
 ARAICharacter::ARAICharacter()
 {
@@ -14,6 +16,7 @@ ARAICharacter::ARAICharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
+	AttributeComp = CreateDefaultSubobject<URAttributeComponent>("AttributeComp");
 
 }
 
@@ -29,6 +32,7 @@ void ARAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents()	;
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ARAICharacter::OnPawnSeen);
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ARAICharacter::OnHealthChange);
 }
 
 void ARAICharacter::OnPawnSeen(APawn* Pawn)
@@ -41,6 +45,15 @@ void ARAICharacter::OnPawnSeen(APawn* Pawn)
 
 		Blackboard->SetValueAsObject("TargetActor", Pawn);
 		DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+	}
+}
+
+void ARAICharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta)
+{
+	// Death
+	if (NewHealth <= 0.f && Delta < 0.f)
+	{
+		Destroy();
 	}
 }
 
