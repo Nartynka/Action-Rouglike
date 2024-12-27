@@ -31,16 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:	
 
 	// Sets default values for this actor's properties
 	ARItemChest();
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

@@ -6,18 +6,18 @@
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BrainComponent.h"
 
 #include "RAttributeComponent.h"
 
 // Sets default values
 ARAICharacter::ARAICharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
+
 	AttributeComp = CreateDefaultSubobject<URAttributeComponent>("AttributeComp");
 
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 // Called when the game starts or when spawned
@@ -29,7 +29,7 @@ void ARAICharacter::BeginPlay()
 
 void ARAICharacter::PostInitializeComponents()
 {
-	Super::PostInitializeComponents()	;
+	Super::PostInitializeComponents();
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ARAICharacter::OnPawnSeen);
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ARAICharacter::OnHealthChange);
@@ -37,7 +37,7 @@ void ARAICharacter::PostInitializeComponents()
 
 void ARAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	AAIController* AIC = Cast<AAIController>(GetController());
+	AAIController* AIC = GetController<AAIController>();
 
 	if (AIC)
 	{
@@ -50,10 +50,23 @@ void ARAICharacter::OnPawnSeen(APawn* Pawn)
 
 void ARAICharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-	// Death
-	if (NewHealth <= 0.f && Delta < 0.f)
+	// Damage not healed
+	if (Delta < 0.f)
 	{
-		Destroy();
+		// Death
+		if (NewHealth <= 0.0f)
+		{
+			// Stop BT
+			AAIController* AIC = GetController<AAIController>();
+			if (AIC)
+			{
+				AIC->GetBrainComponent()->StopLogic("Killed");
+			}
+
+			GetMesh()->SetAllBodiesSimulatePhysics(true);
+			GetMesh()->SetCollisionProfileName("Ragdoll");
+			SetLifeSpan(10.0f);
+		}
 	}
 }
 

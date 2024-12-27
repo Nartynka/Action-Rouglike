@@ -6,7 +6,7 @@
 // Sets default values for this component's properties
 URAttributeComponent::URAttributeComponent()
 {
-	HealthMax = 100.f;
+	HealthMax = 100.0f;
 	Health = HealthMax;
 }
 
@@ -22,8 +22,11 @@ bool URAttributeComponent::IsMaxHealth() const
 
 bool URAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	float OldHealth = Health;
+	Health = FMath::Clamp(Health + Delta, 0.0f, HealthMax);
 
-	return true;
+	float ActualDelta = Health - OldHealth;
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
+
+	return ActualDelta != 0;
 }

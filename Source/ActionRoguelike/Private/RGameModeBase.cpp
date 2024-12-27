@@ -22,8 +22,37 @@ void ARGameModeBase::StartPlay()
 
 void ARGameModeBase::SpawnBots_TimeElapsed()
 {
-	// Run EQS and spawn bots
+	int32 NrOfAliveBots = 0;
 
+	// Count alive bots
+	for (TActorIterator<ARAICharacter> It(GetWorld()); It; ++It)
+	{
+		ARAICharacter* Bot = *It;
+		URAttributeComponent* AttributeComp = Bot->GetComponentByClass<URAttributeComponent>();
+
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
+		{
+			NrOfAliveBots++;
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("%i alive bots"), NrOfAliveBots);
+
+	float MaxBotsCount = 5.f;
+
+	if (DifficultyCurve)
+	{
+		MaxBotsCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if (NrOfAliveBots >= MaxBotsCount)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Max bot capacity. Skipping bot spawn"));
+		return;
+	}
+
+
+	// Run EQS and spawn bots
 	FEnvQueryRequest Request(SpawnBotQuery, this);
 	Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &ARGameModeBase::OnBotSpawnQueryCompleted);
 }
@@ -37,39 +66,13 @@ void ARGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Bots EQS Failed!"));
 		return;
 	}
-	
 
-	int32 NrOfAliveBots = 0;
+	TArray<FVector> Locations;
+	QueryResult->GetAllAsLocations(Locations);
 
-	for (TActorIterator<ARAICharacter> It(GetWorld()); It; ++It)
+	if (Locations.IsValidIndex(0))
 	{
-		ARAICharacter* Bot = *It;
-		URAttributeComponent* AttributeComp = Bot->GetComponentByClass<URAttributeComponent>();
-
-		if (AttributeComp && AttributeComp->IsAlive())
-		{
-			NrOfAliveBots++;
-		}
-	}
-
-	float MaxBotsCount = 5.f;
-
-	if (DifficultyCurve)
-	{
-		MaxBotsCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
-	}
-
-	if (NrOfAliveBots >= MaxBotsCount)
-	{
-		return;
-	}
-
-	TArray<FVector> OutLocations;
-	QueryResult->GetAllAsLocations(OutLocations);
-	
-
-	if (OutLocations.Num() > 0)
-	{
-		GetWorld()->SpawnActor<AActor>(BotClass, OutLocations[0], FRotator::ZeroRotator);
+		GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
+		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Emerald, false, 50.0f);
 	}
 }
