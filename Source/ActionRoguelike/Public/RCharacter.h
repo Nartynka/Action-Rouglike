@@ -90,9 +90,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* Input_Interact;
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	void Move(const FInputActionInstance& Instance);
 	void Look(const FInputActionValue& InputValue);
 
@@ -121,9 +118,6 @@ public:
 
 	// Sets default values for this character's properties
 	ARCharacter();
-	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

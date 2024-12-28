@@ -44,20 +44,6 @@ void ARCharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ARCharacter::OnHealthChange);
 }
 
-// Called when the game starts or when spawned
-void ARCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ARCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 // Called to bind functionality to input
 void ARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimerInterval;
 
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	bool bShouldSpawnBots = true;
+
 	void SpawnBots_TimeElapsed();
 
 	void OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
@@ -41,4 +44,5 @@ public:
 	ARGameModeBase();
 
 	virtual void StartPlay() override;
+
 };

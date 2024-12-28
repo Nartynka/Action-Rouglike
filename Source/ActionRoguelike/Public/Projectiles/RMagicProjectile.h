@@ -26,7 +26,5 @@ protected:
 public:	
 
 	ARMagicProjectile();
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

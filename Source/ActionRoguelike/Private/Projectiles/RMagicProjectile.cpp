@@ -18,6 +18,7 @@ ARMagicProjectile::ARMagicProjectile()
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(RootComponent);
 
+	InitialLifeSpan = 10.
 }
 
 void ARMagicProjectile::PostInitializeComponents()
@@ -35,24 +36,19 @@ void ARMagicProjectile::BeginPlay()
 	AudioComp->Play();
 }
 
+// This triggers only for WorldDynamics and Pawns, the rest triggers OnHit event in base class
 void ARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Projectile only overlaps WorldDynamics and Pawns
+	// The rest is set to block, so the OnHit event in base class is triggered instead
 	if (OtherActor && OtherActor != GetInstigator())
 	{
 		URAttributeComponent* AttributeComp = Cast<URAttributeComponent>(OtherActor->GetComponentByClass(URAttributeComponent::StaticClass()));
 		if (AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(this, -Damage);
+			AttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
 			//UGameplayStatics::PlayWorldCameraShake(this, )
 			Explode();
 		}
 	}
 }
-
-// Called every frame
-void ARMagicProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

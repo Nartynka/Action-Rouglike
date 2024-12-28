@@ -32,14 +32,12 @@ protected:
 	URAttributeComponent* AttributeComp;
 
 	UFUNCTION()
-	void OnPawnSeen(APawn* Pawn);
-
-	UFUNCTION()
 	void OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
+
+	void SetTargetActor(AActor* NewTarget);
 
 
 };

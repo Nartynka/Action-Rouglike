@@ -16,6 +16,11 @@ ARGameModeBase::ARGameModeBase()
 void ARGameModeBase::StartPlay()
 {
 	Super::StartPlay();
+	if (!bShouldSpawnBots)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("bShouldSpawnBots is set to false. Skipping spawning bots!"));
+		return;
+	}
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ARGameModeBase::SpawnBots_TimeElapsed, SpawnTimerInterval, true);
 }

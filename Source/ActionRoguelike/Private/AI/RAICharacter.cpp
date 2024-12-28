@@ -35,24 +35,18 @@ void ARAICharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ARAICharacter::OnHealthChange);
 }
 
-void ARAICharacter::OnPawnSeen(APawn* Pawn)
-{
-	AAIController* AIC = GetController<AAIController>();
-
-	if (AIC)
-	{
-		UBlackboardComponent* Blackboard = AIC->GetBlackboardComponent();
-
-		Blackboard->SetValueAsObject("TargetActor", Pawn);
-		DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
-	}
-}
-
 void ARAICharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
 	// Damage not healed
 	if (Delta < 0.f)
 	{
+		// Check if the instigator is not ourself
+		// Instigator can be the player or other AI
+		if (InstigatorActor != this)
+		{
+			SetTargetActor(InstigatorActor);
+		}
+
 		// Death
 		if (NewHealth <= 0.0f)
 		{
@@ -70,9 +64,20 @@ void ARAICharacter::OnHealthChange(AActor* InstigatorActor, URAttributeComponent
 	}
 }
 
-// Called every frame
-void ARAICharacter::Tick(float DeltaTime)
+void ARAICharacter::SetTargetActor(AActor* NewTarget)
 {
-	Super::Tick(DeltaTime);
+	AAIController* AIC = GetController<AAIController>();
 
+	if (AIC)
+	{
+		// We don't check for null on blackboard comp because
+		// Blackboard component will never be null if the controller is alive
+		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+	}
+}
+
+void ARAICharacter::OnPawnSeen(APawn* Pawn)
+{
+	SetTargetActor(Pawn);
+	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
