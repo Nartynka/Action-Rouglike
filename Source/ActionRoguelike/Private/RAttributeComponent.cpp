@@ -10,6 +10,28 @@ URAttributeComponent::URAttributeComponent()
 	Health = HealthMax;
 }
 
+URAttributeComponent* URAttributeComponent::GetAttributes(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return FromActor->GetComponentByClass<URAttributeComponent>();
+	}
+
+	return nullptr;
+}
+
+bool URAttributeComponent::IsActorAlive(AActor* Actor)
+{
+	URAttributeComponent* AttributeComp = GetAttributes(Actor);
+	
+	if (AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+
+	return false;
+}
+
 bool URAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;

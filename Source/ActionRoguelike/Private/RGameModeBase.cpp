@@ -33,7 +33,7 @@ void ARGameModeBase::SpawnBots_TimeElapsed()
 	for (TActorIterator<ARAICharacter> It(GetWorld()); It; ++It)
 	{
 		ARAICharacter* Bot = *It;
-		URAttributeComponent* AttributeComp = Bot->GetComponentByClass<URAttributeComponent>();
+		URAttributeComponent* AttributeComp = URAttributeComponent::GetAttributes(Bot);
 
 		if (ensure(AttributeComp) && AttributeComp->IsAlive())
 		{

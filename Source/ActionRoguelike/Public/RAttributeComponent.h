@@ -18,6 +18,12 @@ public:
 	// Sets default values for this component's properties
 	URAttributeComponent();
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static URAttributeComponent* GetAttributes(AActor* FromActor);
+	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static bool IsActorAlive(AActor* Actor);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
